@@ -1,38 +1,145 @@
-# zx-ai-front
+# ZX-AI Frontend (智学AI 前端系统)
 
-This template should help get you started developing with Vue 3 in Vite.
+## 📖 项目简介
 
-## Recommended IDE Setup
+ZX-AI Frontend 是智学AI在线教育平台的**前端系统**，基于 **Vue 3 + Vite** 构建。项目集成了 Element Plus UI 组件库，分为**前台学员端**和**后台管理端**两个独立的业务子系统，通过路由权限控制实现角色分离。
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## 🛠️ 技术栈
 
-## Recommended Browser Setup
+* **核心框架**: [Vue 3](https://vuejs.org/) (Composition API)
+* **构建工具**: [Vite](https://vitejs.dev/)
+* **状态管理**: [Pinia](https://pinia.vuejs.org/)
+* **路由管理**: [Vue Router 4](https://router.vuejs.org/)
+* **UI 组件库**: [Element Plus](https://element-plus.org/)
+* **HTTP 请求**: Axios
+* **图表库**: ECharts (用于数据可视化)
+* **CSS 预处理**: Sass
+* **图标库**: @element-plus/icons-vue
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## 🌟 核心功能模块
 
-## Customize configuration
+项目采用单页应用 (SPA) 架构，根据用户角色（学员/管理员）动态展示不同界面。
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+### 1. 学员端 (Client)
 
-## Project Setup
+提供给普通用户学习和使用的界面：
 
-```sh
+* **🏠 首页**: 平台概览、推荐课程、热门讲师。
+* **🤖 AI 助手**: 集成 AI 对话功能，提供智能助教服务。
+* **📚 课程中心**:
+* 课程分类浏览 (`/web/categories`)
+* 讲师课程展示 (`/web/teacher/courses`)
+* 课程详情与学习 (`/web/course/detail`)
+
+
+* **💎 会员体系**:
+* VIP 会员介绍与购买 (`/web/vip`)
+* 会员权益查看 (`/web/vip/detail`)
+
+
+* **👤 个人中心**: 用户资料管理、学习记录、头像预览。
+* **🎉 营销活动**: 限时活动展示 (`/web/activities`)。
+
+### 2. 管理端 (Admin)
+
+提供给管理员进行系统运维的后台：
+
+* **📊 仪表盘**: 核心数据可视化（ECharts 支持）。
+* **👥 用户管理**: 平台用户列表与权限管理。
+* **📝 内容管理**:
+* **课程管理**: 课程发布、编辑、下架。
+* **章节管理**: 课程大纲与视频内容维护。
+* **分类管理**: 课程分类配置。
+* **讲师管理**: 讲师信息维护。
+
+
+* **💰 交易管理**:
+* 课程订单 & VIP 订单查询。
+* 提现申请处理。
+* VIP 价格配置。
+
+
+* **🔧 系统服务**:
+* 在线客服 (`/admin/customer-service`)。
+* 用户反馈处理 (`/admin/feedbacks`)。
+* 活动管理 & 系统设置。
+
+
+
+## 🚀 快速开始
+
+### 1. 环境准备
+
+* Node.js >= 20.19.0 (推荐)
+
+### 2. 安装依赖
+
+```bash
 npm install
+
 ```
 
-### Compile and Hot-Reload for Development
+### 3. 开发环境运行
 
-```sh
+启动本地开发服务器（默认端口 5173）：
+
+```bash
 npm run dev
+
 ```
 
-### Compile and Minify for Production
+### 4. 生产环境构建
 
-```sh
+```bash
 npm run build
+
 ```
+
+## ⚙️ 配置说明
+
+### 跨域代理 (Proxy)
+
+为了解决开发环境跨域问题，项目在 `vite.config.js` 中配置了代理，将请求转发至后端服务：
+
+| 路径前缀 | 目标服务 (后端) | 说明 |
+| --- | --- | --- |
+| `/api/web` | `http://localhost:8081` | 转发至用户端 API 服务 |
+| `/api/admin` | `http://localhost:8082` | 转发至管理端 API 服务 |
+
+### 路由权限控制
+
+路由守卫 (`src/router/index.js`) 实现了以下安全策略：
+
+* **登录拦截**: 访问 `meta.requireAuth` 为 `true` 的页面需先登录。
+* **角色鉴权**: 区分 `admin` (管理员) 和 `common_user` (普通用户) 角色，防止越权访问。
+* **系统维护**: 支持系统维护模式拦截 (`/maintenance`)。
+
+## 📂 目录结构
+
+```
+zx-ai-front
+├── src
+│   ├── api              # 后端接口定义 (按模块划分 admin/web)
+│   ├── assets           # 静态资源 (css, svg)
+│   ├── components       # 全局公用组件 (AI助手, 支付弹窗等)
+│   ├── router           # 路由配置
+│   ├── stores           # Pinia 状态管理 (User Store)
+│   ├── utils            # 工具库 (Axios封装, Auth工具)
+│   ├── views            # 页面视图组件
+│   │   ├── admin        # 后台管理页面
+│   │   └── ...          # 前台业务页面
+│   ├── App.vue          # 根组件
+│   └── main.js          # 入口文件
+├── public               # 公共静态资源
+├── index.html           # HTML 模板
+└── vite.config.js       # Vite 配置文件
+
+```
+
+## 🤝 接口联调
+
+请确保后端服务（`zx-ai-back`）已启动，且端口配置与前端代理一致。
+
+* **Web API**: 8081 端口
+* **Admin API**: 8082 端口
+
